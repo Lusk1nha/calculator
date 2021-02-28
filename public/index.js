@@ -8,6 +8,7 @@ let account = ''
 
 for ( key of allKeys ) {
   const keyType = key.classList[1]
+
   if (keyType == 'number') {
     key.addEventListener('click', pressedNumber)
 
@@ -25,26 +26,35 @@ for ( key of allKeys ) {
 }
 
 function pressedNumber() {
+  if (numberValidations()) return console.log('limit account') 
+
   const number = this.innerHTML
   resultOutput.value += number
   account += number
 
+  function numberValidations() {
+    if ( resultOutput.value.length > 8 ) { return true}
+
+  }
+
 }
  
 function pressedOperator() {
-  if ( operatorValidations() ) return console.log('error')
-
   let operator = this.innerHTML
   resultOutput.value += operator
   
-  if ( operator === "x" ) operator = '*'
-  else if ( operator === '÷' ) operator = '/'
+  if ( operatorValidations() ) return console.log('error')
   
   account += operator
   
   function operatorValidations() {
-    if ( !resultOutput.value ) { return true }
+    if ( !resultOutput.value ) { return true } // IF the input doesn't have any number, return an error
 
+    // operator transformation
+    if ( operator === "x" )operator = '*'
+    else if ( operator === '÷' ) operator = '/'
+
+    return
   }
   
 }
