@@ -10,11 +10,15 @@
 </head>
 <body>
   <div id="calculator-container">
-    <div class="output"></div>
+    <div id="output">
+      <input class="result" type="text" placeholder="0"></input>
+      <div class="previous-account"></div>
+      
+    </div>
 
-    <div class="key-container">
+    <div id="key-container">
       <div class="row first">
-        <div class="key operator delete">C</div>
+        <div class="key delete">C</div>
         <div class="key operator">÷</div>
         <div class="key operator">%</div>
         <div class="key operator">x</div>
@@ -50,7 +54,8 @@
       </div>
 
     </div>
-
   </div>
+
+  <script src="./index.js"></script>
 </body>
 </html>
