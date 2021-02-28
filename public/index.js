@@ -5,6 +5,12 @@ const resultOutput = output.childNodes[1]
 const previousOutput = output.childNodes[3]
 
 let account = ''
+let primaryAccount = ''
+let operatorAccount = ''
+let secondaryAccount = ''
+
+let operatorActive = false
+
 
 for ( key of allKeys ) {
   const keyType = key.classList[1]
@@ -26,14 +32,24 @@ for ( key of allKeys ) {
 }
 
 function pressedNumber() {
-  if (numberValidations()) return console.log('limit account') 
-
+  if (numberValidations()) return console.log('limit account')
+  
   const number = this.innerHTML
   resultOutput.value += number
   account += number
 
+  if ( !operatorActive ) {
+    primaryAccount += number
+    
+  } else {
+    secondaryAccount += number
+
+  }
+
+
   function numberValidations() {
-    if ( resultOutput.value.length > 8 ) { return true}
+    if ( !operatorActive && primaryAccount.length > 6 ) { return true}
+    else if ( secondaryAccount.length > 6 ) { return true}
 
   }
 
@@ -41,25 +57,30 @@ function pressedNumber() {
  
 function pressedOperator() {
   let operator = this.innerHTML
-  resultOutput.value += operator
   
-  if ( operatorValidations() ) return console.log('error')
+  if ( operatorValidations() ) return
   
-  account += operator
+  operatorActive = true
+  operatorAccount = operator
+  return account += operator
+
   
   function operatorValidations() {
-    if ( !resultOutput.value ) { return true } // IF the input doesn't have any number, return an error
-
+    if ( !primaryAccount ) { return true } // IF the input doesn't have any number, return an error
+    
+    resultOutput.value += operator
+    
     // operator transformation
-    if ( operator === "x" )operator = '*'
+    if ( operator === "x" ) operator = '*'
     else if ( operator === '÷' ) operator = '/'
 
     return
-  }
-  
+  } 
 }
 
 function pressedEnter() {
+  if ( !primaryAccount || !secondaryAccount ) return
+
   const result = eval(account)
   
   previousOutput.innerHTML = resultOutput.value
@@ -67,11 +88,25 @@ function pressedEnter() {
 
   account = result
 
+  console.log(primaryAccount)
+  console.log(operatorAccount)
+  console.log(secondaryAccount)
+
+  primaryAccount = result
+  operatorAccount = ''
+  secondaryAccount = ''
+
 }
 
 function pressedDelete() {
   account = ''
   resultOutput.value = ''
   previousOutput.innerHTML = ''
+
+  primaryAccount = ''
+  operatorAccount = ''
+  secondaryAccount = ''
+
+  operatorActive = false
 
 }
