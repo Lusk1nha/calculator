@@ -1,10 +1,10 @@
 const allKeys = document.querySelectorAll(".key")
 const output = document.querySelector('#output')
 
-const resultOutput = output.childNodes[1]
-const previousOutput = output.childNodes[3]
+const resultOutput = document.querySelector('.result')
+const previousOutput = document.querySelector('.previous-completeAccount')
 
-let account = ''
+let completeAccount = ''
 let primaryAccount = ''
 let operatorAccount = ''
 let secondaryAccount = ''
@@ -32,27 +32,27 @@ for ( key of allKeys ) {
 }
 
 function pressedNumber() {
-  if (numberValidations()) return console.log('limit account')
-  
   const number = this.innerHTML
+
+  if (numberValidations(number)) return
+  
   resultOutput.value += number
-  account += number
+  completeAccount += number
 
-  if ( !operatorActive ) {
-    primaryAccount += number
+  function numberValidations(number) {
+    if ( primaryAccount == '' && number == 0 || primaryAccount == '' && number == '.' ) return true
+
+    if ( !operatorActive && primaryAccount.length > 6 ) return true
+    else if ( secondaryAccount.length > 6 ) return true
+
+    if ( !operatorActive ) {
+      primaryAccount += number 
+      return false
+    } 
     
-  } else {
     secondaryAccount += number
-
+    return false
   }
-
-
-  function numberValidations() {
-    if ( !operatorActive && primaryAccount.length > 6 ) { return true}
-    else if ( secondaryAccount.length > 6 ) { return true}
-
-  }
-
 }
  
 function pressedOperator() {
@@ -62,35 +62,31 @@ function pressedOperator() {
   
   operatorActive = true
   operatorAccount = operator
-  return account += operator
+  
+  return completeAccount += operator
 
   
   function operatorValidations() {
-    if ( !primaryAccount ) { return true } // IF the input doesn't have any number, return an error
-    
+    if ( !primaryAccount ) return true // IF the input doesn't have any number, return an error
+    if ( operatorAccount ) return true
+
     resultOutput.value += operator
     
     // operator transformation
     if ( operator === "x" ) operator = '*'
     else if ( operator === '÷' ) operator = '/'
-
-    return
-  } 
+  }
 }
 
 function pressedEnter() {
   if ( !primaryAccount || !secondaryAccount ) return
 
-  const result = eval(account)
-  
+  const result = eval(completeAccount)
+
   previousOutput.innerHTML = resultOutput.value
   resultOutput.value = result
 
-  account = result
-
-  console.log(primaryAccount)
-  console.log(operatorAccount)
-  console.log(secondaryAccount)
+  completeAccount = result
 
   primaryAccount = result
   operatorAccount = ''
@@ -99,14 +95,28 @@ function pressedEnter() {
 }
 
 function pressedDelete() {
-  account = ''
-  resultOutput.value = ''
-  previousOutput.innerHTML = ''
+  if ( this.innerHTML === "AC" ) {
+    const stringResult = resultOutput.value.toString()
+    const stringAccount = completeAccount.toString()
 
-  primaryAccount = ''
-  operatorAccount = ''
-  secondaryAccount = ''
+    if ( operatorActive && secondaryAccount == '' ) {
+      operatorActive = false
+      operatorAccount = ''
+    }
 
-  operatorActive = false
+    resultOutput.value = stringResult.slice(0, -1)
+    completeAccount = stringAccount.slice(0, -1)
+    return
 
+  } else {
+    completeAccount = ''
+    resultOutput.value = ''
+    previousOutput.innerHTML = ''
+
+    primaryAccount = ''
+    operatorAccount = ''
+    secondaryAccount = ''
+
+    return operatorActive = false
+  }
 }
