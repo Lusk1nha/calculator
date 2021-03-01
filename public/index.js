@@ -2,9 +2,9 @@ const allKeys = document.querySelectorAll(".key")
 const output = document.querySelector('#output')
 
 const resultOutput = document.querySelector('.result')
-const previousOutput = document.querySelector('.previous-completeAccount')
+const previousOutput = document.querySelector('.previous-account')
 
-let completeAccount = ''
+let account = ''
 let primaryAccount = ''
 let operatorAccount = ''
 let secondaryAccount = ''
@@ -37,7 +37,7 @@ function pressedNumber() {
   if (numberValidations(number)) return
   
   resultOutput.value += number
-  completeAccount += number
+  account += number
 
   function numberValidations(number) {
     if ( primaryAccount == '' && number == 0 || primaryAccount == '' && number == '.' ) return true
@@ -62,8 +62,7 @@ function pressedOperator() {
   
   operatorActive = true
   operatorAccount = operator
-  
-  return completeAccount += operator
+  return account += operator
 
   
   function operatorValidations() {
@@ -81,12 +80,12 @@ function pressedOperator() {
 function pressedEnter() {
   if ( !primaryAccount || !secondaryAccount ) return
 
-  const result = eval(completeAccount)
+  const result = eval(account)
 
   previousOutput.innerHTML = resultOutput.value
   resultOutput.value = result
 
-  completeAccount = result
+  account = result
 
   primaryAccount = result
   operatorAccount = ''
@@ -97,7 +96,7 @@ function pressedEnter() {
 function pressedDelete() {
   if ( this.innerHTML === "AC" ) {
     const stringResult = resultOutput.value.toString()
-    const stringAccount = completeAccount.toString()
+    const stringAccount = account.toString()
 
     if ( operatorActive && secondaryAccount == '' ) {
       operatorActive = false
@@ -105,11 +104,11 @@ function pressedDelete() {
     }
 
     resultOutput.value = stringResult.slice(0, -1)
-    completeAccount = stringAccount.slice(0, -1)
+    account = stringAccount.slice(0, -1)
     return
 
   } else {
-    completeAccount = ''
+    account = ''
     resultOutput.value = ''
     previousOutput.innerHTML = ''
 
